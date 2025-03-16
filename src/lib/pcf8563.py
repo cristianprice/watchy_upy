@@ -131,11 +131,18 @@ class PCF8563:
         """
         return self.__bcd2dec(self.__read_byte(PCF8563_YEAR_REG))
 
+    def full_year(self):
+        """Get the current year, correctly handling the century bit"""
+        raw_year = self.__bcd2dec(self.__read_byte(PCF8563_YEAR_REG))
+        century_flag = self.__read_byte(
+            PCF8563_MONTH_REG) & 0x80  # Check century bit
+        return (1900 if century_flag else 2000) + raw_year
+
     def datetime(self):
         """Return a tuple such as (year, month, date, day, hours, minutes,
         seconds).
         """
-        return (self.year(), self.month(), self.date(),
+        return (self.full_year(), self.month(), self.date(),
                 self.day(), self.hours(), self.minutes(),
                 self.seconds())
 
@@ -254,7 +261,7 @@ class PCF8563:
             if minutes < 0 or minutes > 59:
                 raise ValueError('Minutes is out of range [0,59].')
             self.__write_byte(PCF8563_ALARM_MINUTES,
-                            self.__dec2bcd(minutes) & 0x7f)
+                              self.__dec2bcd(minutes) & 0x7f)
 
         if hours is None:
             hours = PCF8563_ALARM_ENABLE
