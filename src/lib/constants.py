@@ -23,7 +23,7 @@ DISPLAY_DC = const(10)
 DISPLAY_BUSY = const(19)
 ACC_INT_1_PIN = const(14)
 ACC_INT_2_PIN = const(12)
-VIB_MOTOR_PIN = const(13)
+VIBRATE_MOTOR_PIN = const(13)
 RTC_INT_PIN = const(27)
 
 UP_BTN_PIN = const(35)

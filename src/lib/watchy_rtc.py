@@ -24,3 +24,6 @@ class WatchyRTC:
         # Set the alarm to trigger every minute
         self.rtc.set_daily_alarm(minutes=1)
         self.rtc.enable_alarm_interrupt()
+
+    def clear_alarm(self):
+        self.rtc.clear_alarm()
