@@ -1,10 +1,10 @@
 from lib.display import Display
-from lib.ds3231 import DS3231
-from machine import Pin, SoftI2C, ADC, WDT, Timer
+from lib.watchy_rtc import WatchyRTC
+from machine import Pin,  ADC, WDT, Timer
 import esp32
 import machine
-import micropython
-import time
+import asyncio
+
 from utils import (
     hour_to_string,
     number_teen_to_string,
@@ -12,7 +12,7 @@ from utils import (
     month_to_short_string,
     week_day_to_short_string,
 )
-from constants import (
+from lib.constants import (
     MENU_PIN,
     BACK_PIN,
     UP_PIN,
@@ -37,16 +37,16 @@ class Watchy:
     def __init__(self):
         self.wdt = WDT(timeout=30000)
         self.wdt_timer = Timer(0)
-        self.wdt_timer.init(mode=Timer.PERIODIC, period=10000, callback=self.feed_wdt)
+        self.wdt_timer.init(mode=Timer.PERIODIC,
+                            period=10000, callback=self.feed_wdt)
 
         self.display = Display()
-        i2c = SoftI2C(sda=Pin(RTC_SDA_PIN), scl=Pin(RTC_SCL_PIN))
-        self.rtc = DS3231(i2c)
-        self.rtc.alarm1(time=(0), match=self.rtc.AL1_EVERY_S, int_en=True)
+        self.rtc = WatchyRTC()
+        self.rtc.start_alarm()
         self.adc = ADC(Pin(BATT_ADC_PIN, Pin.IN))
 
         self.init_interrupts()
-        # self.init_buttons()
+        self.init_buttons()
         self.handle_wakeup()
         if not DEBUG:
             machine.deepsleep()
@@ -69,7 +69,7 @@ class Watchy:
         back_pin = Pin(25, Pin.IN)
         up_pin = Pin(32, Pin.IN)
         down_pin = Pin(4, Pin.IN)
-        for pin in [menu_pin]:  # back_pin, up_pin
+        for pin in [menu_pin, back_pin, up_pin, down_pin]:  # back_pin, up_pin
             self.set_pin_handler(pin)
 
     def set_pin_handler(self, pin: Pin):
@@ -98,13 +98,13 @@ class Watchy:
 
     def display_prose_watchface(self):
         self.display.framebuf.fill(WHITE)
-        datetime = self.rtc.datetime()
-        (_, month, day, week_day, hours, minutes, _, _) = datetime
+        datetime = self.rtc.get_time()
+        year, month, date, week_day, hours, minutes, seconds = datetime
         self.display.display_text(
             hour_to_string(hours), 10, 15, fira_sans_bold_58, WHITE, BLACK
         )
 
-        display_minutes_1 = lambda text: self.display.display_text(
+        def display_minutes_1(text): return self.display.display_text(
             text, 10, 80, fira_sans_regular_38, WHITE, BLACK
         )
         if minutes == 0:
@@ -122,7 +122,7 @@ class Watchy:
         week_day_str = week_day_to_short_string(week_day)
         month_str = month_to_short_string(month)
         self.display.display_text(
-            f"{week_day_str}, {day} {month_str}",
+            f"{week_day_str}, {date} {month_str}",
             10,
             160,
             fira_sans_regular_28,

@@ -1,4 +1,4 @@
-from constants import BLACK, WHITE
+from lib.constants import BLACK, WHITE
 from lib.epaper1in54 import EPD
 from lib.writer import Writer
 from machine import Pin, SPI
@@ -6,6 +6,7 @@ import framebuf
 
 # fonts
 import assets.fonts.fira_sans_regular_24 as fira_sans_regular_24
+from lib.constants import BLACK, WHITE, DISPLAY_CS, DISPLAY_RES, DISPLAY_DC, DISPLAY_BUSY
 
 
 class Display:
@@ -17,10 +18,10 @@ class Display:
     MAX_HEIGHT = 200
 
     def __init__(self):
-        cs = Pin(5, Pin.OUT, value=1)
-        dc = Pin(10, Pin.OUT, value=0)
-        reset = Pin(9, Pin.OUT, value=0)
-        busy = Pin(19, Pin.IN)
+        cs = Pin(DISPLAY_CS, Pin.OUT, value=1)
+        dc = Pin(DISPLAY_DC, Pin.OUT, value=0)
+        reset = Pin(DISPLAY_RES, Pin.OUT, value=0)
+        busy = Pin(DISPLAY_BUSY, Pin.IN)
 
         sck = Pin(18)
         mosi = Pin(23)
@@ -49,7 +50,8 @@ class Display:
 
     def update(self, buffer: bytearray | None = None, mirror_y=True, partial=False):
         target_buffer = self.buffer if buffer is None else buffer
-        self.epd.display_buffer(target_buffer, mirror_y=mirror_y, partial=partial)
+        self.epd.display_buffer(
+            target_buffer, mirror_y=mirror_y, partial=partial)
 
     def fill(self, color: int):
         self.framebuf.fill(color)

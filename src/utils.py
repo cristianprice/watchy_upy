@@ -1,7 +1,7 @@
 import esp32
 import time
 from machine import Pin
-from constants import VIBRATE_MOTOR_PIN
+from lib.constants import VIBRATE_MOTOR_PIN
 
 
 def get_temperature() -> float:
@@ -104,5 +104,6 @@ def week_day_to_short_string(number: int) -> str:
     """
     :param number: 1 - 7 for Monday till Sunday
     """
-    WEEK_DAY_SHORT_STRINGS = ["Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"]
+    WEEK_DAY_SHORT_STRINGS = ["Mon", "Tue",
+                              "Wed", "Thurs", "Fri", "Sat", "Sun"]
     return WEEK_DAY_SHORT_STRINGS[number - 1]
