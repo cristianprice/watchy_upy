@@ -69,8 +69,8 @@ class Watchy:
         back_pin = Pin(25, Pin.IN)
         up_pin = Pin(32, Pin.IN)
         down_pin = Pin(4, Pin.IN)
-        # for pin in [menu_pin]:  # back_pin, up_pin
-        #    self.set_pin_handler(pin)
+        for pin in [menu_pin]:  # back_pin, up_pin
+            self.set_pin_handler(pin)
 
     def set_pin_handler(self, pin: Pin):
         pin.irq(
@@ -87,8 +87,8 @@ class Watchy:
             self.rtc.clear_alarm()
         elif reason is machine.EXT1_WAKE:
             print("PIN wake")
-            p = Pin(MENU_PIN, Pin.IN)
-            print(p.value())
+            # p = Pin(MENU_PIN, Pin.IN)
+            # print(p.value())
         else:
             print("Wake for other reason")
             print(reason)
