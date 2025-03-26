@@ -2,9 +2,10 @@ import machine
 import esp32
 import time
 from constants import MENU_BTN_PIN, UP_BTN_PIN, DOWN_BTN_PIN, BACK_BTN_PIN
-from utils import vibrate_motor
+from utils import vibrate_motor, get_battery_voltage
 from display import Display
 import fira_sans_regular_38
+import fira_sans_regular_24
 from constants import WHITE, BLACK
 
 
@@ -54,6 +55,12 @@ def handle_wake_up():
         int((int(Display.MAX_WIDTH/2)-len(display_time)) / 2),
         int(Display.MAX_HEIGHT/2),
         fira_sans_regular_38,
+        WHITE,
+        BLACK
+    )
+    display.display_text(
+        "{:02d}%".format(get_battery_voltage()),
+        0, 0, fira_sans_regular_24,
         WHITE,
         BLACK
     )

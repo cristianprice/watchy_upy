@@ -1,7 +1,26 @@
 import esp32
 import time
-from machine import Pin
-from constants import VIBRATE_MOTOR_PIN
+from machine import Pin, ADC
+from constants import VIBRATE_MOTOR_PIN, BATT_ADC_PIN
+
+
+def get_battery_voltage() -> float:
+    adc = ADC(Pin(BATT_ADC_PIN, Pin.IN))
+    adc.atten(ADC.ATTN_11DB)
+    return battery_percentage(adc.read() / 4095 * 3.9 * 2)
+
+
+def battery_percentage(voltage):
+    if voltage >= 4.2:
+        return 100
+    elif voltage >= 4.0:
+        return 75
+    elif voltage >= 3.7:
+        return 50
+    elif voltage >= 3.5:
+        return 25
+    else:
+        return 0  # Below 3.5V, battery is very low
 
 
 def get_temperature() -> float:
