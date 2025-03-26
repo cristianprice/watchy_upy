@@ -78,7 +78,7 @@ class EPD:
         b"\x10\x18\x18\x08\x18\x18\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13\x14\x44\x12\x00\x00\x00\x00\x00\x00"
     )
 
-    def send_command(self, command: int, data: bytearray = None):
+    def send_command(self, command: int, data=None):
         self.dc.off()
         self.cs.off()
         self.spi.write(bytearray([command]))
@@ -100,9 +100,11 @@ class EPD:
         self.send_data(bytearray([0x00]))  # GD = 0 SM = 0 TB = 0
         self.send_command(BOOSTER_SOFT_START_CONTROL, b"\xD7\xD6\x9D")
         self.send_command(WRITE_VCOM_REGISTER, b"\xA8")  # VCOM 7C
-        self.send_command(SET_DUMMY_LINE_PERIOD, b"\x1A")  # 4 dummy lines per gate
+        # 4 dummy lines per gate
+        self.send_command(SET_DUMMY_LINE_PERIOD, b"\x1A")
         self.send_command(SET_GATE_TIME, b"\x08")  # 2us per line
-        self.send_command(DATA_ENTRY_MODE_SETTING, b"\x03")  # X increment Y increment
+        # X increment Y increment
+        self.send_command(DATA_ENTRY_MODE_SETTING, b"\x03")
         self.set_lut(self.LUT_FULL_UPDATE)
 
     def wait_until_idle(self):
@@ -198,7 +200,8 @@ class EPD:
                     if mirror_y
                     else j + dx // 8 + (i + dy) * width_bytes
                 )
-                self.send_data(bytearray([~buffer[idx] if invert else buffer[idx]]))
+                self.send_data(
+                    bytearray([~buffer[idx] if invert else buffer[idx]]))
 
     def display_buffer(self, buffer: bytearray, mirror_y=True, partial=False):
         self.send_command(WRITE_RAM)

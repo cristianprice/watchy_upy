@@ -3,6 +3,9 @@ import esp32
 import time
 from constants import MENU_BTN_PIN, UP_BTN_PIN, DOWN_BTN_PIN, BACK_BTN_PIN
 from utils import vibrate_motor
+from display import Display
+import fira_sans_regular_38
+from constants import WHITE, BLACK
 
 
 def handle_wake_up():
@@ -30,8 +33,36 @@ def handle_wake_up():
 
     time.sleep(0.7)
     print('Going to sleep')
-    vibrate_motor(200)
-    machine.deepsleep(20000)
+
+    display = Display()
+    display.fill(WHITE)
+
+    """
+    * year includes the century (for example 2014).
+    * month   is 1-12
+    * mday    is 1-31
+    * hour    is 0-23
+    * minute  is 0-59
+    * second  is 0-59
+    * weekday is 0-6 for Mon-Sun
+    * yearday is 1-366
+    """
+    year, month, mday, hour, min, sec, _, _ = time.localtime()
+    display_time = "{:02d}:{:02d}:{:02d}".format(hour, min, sec)
+    display.display_text(
+        display_time,
+        int((int(Display.MAX_WIDTH/2)-len(display_time)) / 2),
+        int(Display.MAX_HEIGHT/2),
+        fira_sans_regular_38,
+        WHITE,
+        BLACK
+    )
+
+    display.update()
+    display.sleep()
+
+    vibrate_motor([300])
+    machine.deepsleep(120000)
 
 
 if __name__ == '__main__':

@@ -4,8 +4,7 @@ from writer import Writer
 from machine import Pin, SPI
 import framebuf
 
-# fonts
-import assets.fonts.fira_sans_regular_24 as fira_sans_regular_24
+
 from constants import BLACK, WHITE, DISPLAY_CS, DISPLAY_RES, DISPLAY_DC, DISPLAY_BUSY
 
 
@@ -48,7 +47,7 @@ class Display:
         self.epd.init()
         self.epd.hw_init()
 
-    def update(self, buffer: bytearray | None = None, mirror_y=True, partial=False):
+    def update(self, buffer=None, mirror_y=True, partial=False):
         target_buffer = self.buffer if buffer is None else buffer
         self.epd.display_buffer(
             target_buffer, mirror_y=mirror_y, partial=partial)
