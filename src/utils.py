@@ -1,7 +1,7 @@
 import esp32
 import time
 from machine import Pin
-from lib.constants import VIBRATE_MOTOR_PIN
+from constants import VIBRATE_MOTOR_PIN
 
 
 def get_temperature() -> float:

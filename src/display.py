@@ -1,12 +1,12 @@
-from lib.constants import BLACK, WHITE
-from lib.epaper1in54 import EPD
-from lib.writer import Writer
+from constants import BLACK, WHITE
+from epaper1in54 import EPD
+from writer import Writer
 from machine import Pin, SPI
 import framebuf
 
 # fonts
 import assets.fonts.fira_sans_regular_24 as fira_sans_regular_24
-from lib.constants import BLACK, WHITE, DISPLAY_CS, DISPLAY_RES, DISPLAY_DC, DISPLAY_BUSY
+from constants import BLACK, WHITE, DISPLAY_CS, DISPLAY_RES, DISPLAY_DC, DISPLAY_BUSY
 
 
 class Display:
