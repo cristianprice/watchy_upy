@@ -7,7 +7,7 @@ from constants import VIBRATE_MOTOR_PIN, BATT_ADC_PIN
 def get_battery_voltage() -> float:
     adc = ADC(Pin(BATT_ADC_PIN, Pin.IN))
     adc.atten(ADC.ATTN_11DB)
-    return battery_percentage(adc.read() / 4095 * 3.9 * 2)
+    return adc.read() / 4095 * 3.9 * 2
 
 
 def battery_percentage(voltage):

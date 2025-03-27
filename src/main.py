@@ -2,7 +2,7 @@ import machine
 import esp32
 import time
 from constants import MENU_BTN_PIN, UP_BTN_PIN, DOWN_BTN_PIN, BACK_BTN_PIN
-from utils import vibrate_motor, get_battery_voltage
+from utils import vibrate_motor, get_battery_voltage, battery_percentage
 from display import Display
 import fira_sans_regular_38
 import fira_sans_regular_24
@@ -38,18 +38,8 @@ def handle_wake_up():
     display = Display()
     display.fill(WHITE)
 
-    """
-    * year includes the century (for example 2014).
-    * month   is 1-12
-    * mday    is 1-31
-    * hour    is 0-23
-    * minute  is 0-59
-    * second  is 0-59
-    * weekday is 0-6 for Mon-Sun
-    * yearday is 1-366
-    """
-    year, month, mday, hour, min, sec, _, _ = time.localtime()
-    display_time = "{:02d}:{:02d}:{:02d}".format(hour, min, sec)
+    year, month, mday, hour, _min, sec, _, _ = time.localtime()
+    display_time = "{:02d}:{:02d}:{:02d}".format(hour, _min, sec)
     display.display_text(
         display_time,
         int((int(Display.MAX_WIDTH/2)-len(display_time)) / 2),
@@ -58,9 +48,11 @@ def handle_wake_up():
         WHITE,
         BLACK
     )
+    
+    v = get_battery_voltage()
     display.display_text(
-        "{:02d}%".format(get_battery_voltage()),
-        0, 0, fira_sans_regular_24,
+        "V{:.2f} - {:02d}%".format(v, battery_percentage(v)),
+        4, 4, fira_sans_regular_24,
         WHITE,
         BLACK
     )
