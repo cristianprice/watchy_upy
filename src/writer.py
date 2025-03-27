@@ -125,7 +125,8 @@ class Writer:
         if margin < 0:
             if not self.row_clip:
                 self.device.scroll(0, margin)
-                self.device.fill_rect(0, y, self.screenwidth, abs(margin), self.bgcolor)
+                self.device.fill_rect(
+                    0, y, self.screenwidth, abs(margin), self.bgcolor)
                 s.text_row += margin
 
     def set_clip(self, row_clip=None, col_clip=None, wrap=None):
@@ -153,14 +154,15 @@ class Writer:
 
     def _printline(self, string, invert):
         rstr = None
-        if self.wrap and self.stringlen(string, True):  # Length > self.screenwidth
+        # Length > self.screenwidth
+        if self.wrap and self.stringlen(string, True):
             pos = 0
             lstr = string[:]
             while self.stringlen(lstr, True):  # Length > self.screenwidth
                 pos = lstr.rfind(" ")
                 lstr = lstr[:pos].rstrip()
             if pos > 0:
-                rstr = string[pos + 1 :]
+                rstr = string[pos + 1:]
                 string = lstr
 
         for char in string:
@@ -259,7 +261,8 @@ class Writer:
         if invert:
             for i, v in enumerate(buf):
                 buf[i] = 0xFF & ~v
-        fbc = framebuf.FrameBuffer(buf, self.clip_width, self.char_height, self.map)
+        fbc = framebuf.FrameBuffer(
+            buf, self.clip_width, self.char_height, self.map)
         self.device.blit(fbc, s.text_col, s.text_row)
         s.text_col += self.char_width
         self.cpos += 1

@@ -54,7 +54,7 @@ class Display:
 
     def fill(self, color: int):
         self.framebuf.fill(color)
-        self.framebuf.rect(2,2,198,198,BLACK)
+        self.framebuf.rect(2, 2, 198, 198, BLACK)
 
     def sleep(self):
         self.epd.sleep()

@@ -48,7 +48,7 @@ def handle_wake_up():
         WHITE,
         BLACK
     )
-    
+
     v = get_battery_voltage()
     display.display_text(
         "V{:.2f} - {:02d}%".format(v, battery_percentage(v)),
